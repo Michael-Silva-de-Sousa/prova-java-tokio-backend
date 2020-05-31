@@ -12,6 +12,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.example.api.domain.Customer;
 import com.example.api.service.CustomerService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/customers")
 public class CustomerController {
@@ -35,7 +37,7 @@ public class CustomerController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Response<Customer>> create(@RequestBody Customer customer){
+	public ResponseEntity<Response<Customer>> create(@RequestBody @Valid Customer customer){
 		Response<Customer> response = new Response<Customer>();
 		Customer customerResult = service.create(customer);
 		response.setData(customerResult);
