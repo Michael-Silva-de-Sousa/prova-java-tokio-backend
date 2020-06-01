@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.example.api.resonse.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +24,9 @@ public class CustomerController {
     private CustomerService service;
 
     @GetMapping
-    public ResponseEntity<Response<List<Customer>>> findAll() {
-        Response<List<Customer>> response = new Response<>();
-        List customers = service.findAll();
+    public ResponseEntity<Response<Page<Customer>>> findAll(Pageable pageable) {
+        Response<Page<Customer>> response = new Response<>();
+        Page customers = service.findAll(pageable);
         response.setData(customers);
         return ResponseEntity.ok(response);
     }

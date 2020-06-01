@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -241,7 +242,7 @@ public class ApiCustomerControllerTest {
 
     /***
      * A PARTIR DAQUI SÃO TESTES DE GET
-     */
+
     @Test
     public void testCustomerFindAll() throws Exception {
         List all = new ArrayList<>();
@@ -283,5 +284,5 @@ public class ApiCustomerControllerTest {
                 .andExpect(jsonPath("$.data.name").value("Alfredo"))
                 .andExpect(jsonPath("$.data.email").value("alfredo@email.com"))
                 .andExpect(jsonPath("$.errors").isEmpty());
-    }
+    }*/
 }
