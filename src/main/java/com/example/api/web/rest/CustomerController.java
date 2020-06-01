@@ -22,14 +22,21 @@ public class CustomerController {
     private CustomerService service;
 
     @GetMapping
-    public List<Customer> findAll() {
-        return service.findAll();
+    public ResponseEntity<Response<List<Customer>>> findAll() {
+        Response<List<Customer>> response = new Response<>();
+        List customers = service.findAll();
+        response.setData(customers);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public Customer findById(@PathVariable Long id) {
-        return service.findById(id)
+    public ResponseEntity<Response<Customer>> findById(@PathVariable Long id) {
+        Response<Customer> response = new Response<Customer>();
+        Customer customerResult = service.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+
+        response.setData(customerResult);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping

@@ -17,8 +17,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
+import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -235,4 +239,49 @@ public class ApiCustomerControllerTest {
                 .andExpect(jsonPath("$.data").isEmpty());
     }
 
+    /***
+     * A PARTIR DAQUI SÃO TESTES DE GET
+     */
+    @Test
+    public void testCustomerFindAll() throws Exception {
+        List all = new ArrayList<>();
+
+        Customer customer1 = new Customer();
+        customer1.setId(1L);
+        customer1.setName("Alfredo");
+        customer1.setEmail("alfredo@email.com");
+
+        Customer customer2 = new Customer();
+        customer2.setId(2L);
+        customer2.setName("Julio");
+        customer2.setEmail("julio@email.com");
+
+        all.addAll(Arrays.asList(customer1, customer2));
+
+        BDDMockito.when(this.customerService.findAll()).thenReturn(all);
+
+        List result = this.customerService.findAll();
+
+        BDDMockito.verify(customerService).findAll();
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    public void testCustomerFindById() throws Exception {
+
+        Customer customer = new Customer();
+        customer.setId(1L);
+        customer.setName("Alfredo");
+        customer.setEmail("alfredo@email.com");
+
+        BDDMockito.when(this.customerService.findById(1L)).thenReturn(Optional.of(customer));
+
+        mvc.perform(MockMvcRequestBuilders.get(URL_BASE + ID_CUSTOMER)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.id").value(1L))
+                .andExpect(jsonPath("$.data.name").value("Alfredo"))
+                .andExpect(jsonPath("$.data.email").value("alfredo@email.com"))
+                .andExpect(jsonPath("$.errors").isEmpty());
+    }
 }
