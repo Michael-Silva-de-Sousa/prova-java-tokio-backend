@@ -22,6 +22,15 @@ public class Address {
     private String locality;
     private String uf;
 
+    public Address(@NotEmpty String zipCode, String publicPlace, String complement, String neighborhood, String locality, String uf) {
+        this.zipCode = zipCode;
+        this.publicPlace = publicPlace;
+        this.complement = complement;
+        this.neighborhood = neighborhood;
+        this.locality = locality;
+        this.uf = uf;
+    }
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "id_customer")
