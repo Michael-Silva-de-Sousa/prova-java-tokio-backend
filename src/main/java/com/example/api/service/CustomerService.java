@@ -27,7 +27,11 @@ public class CustomerService {
 	}
 
 	@Transactional
-	public Customer create(Customer customer){
+	public Customer save(Customer customer){
 		return repository.save(customer);
 	}
+
+    public void delete(Customer customer) {
+			repository.delete(customer);
+    }
 }

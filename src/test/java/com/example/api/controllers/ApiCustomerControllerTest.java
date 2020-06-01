@@ -1,4 +1,4 @@
-package com.example.api;
+package com.example.api.controllers;
 
 
 import com.example.api.domain.Customer;
@@ -17,6 +17,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Optional;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -30,7 +32,8 @@ public class ApiCustomerControllerTest {
     @MockBean
     private CustomerService customerService;
 
-    private static final String URL_BASE = "/customers";
+    private static final String URL_BASE = "/customers/";
+    private static final Long ID_CUSTOMER = 1L;
 
     /** TESTE CADASTRO DE UM NOVO CLIENTE*/
     @Test
@@ -43,7 +46,7 @@ public class ApiCustomerControllerTest {
 
         Gson gson = new Gson();
 
-        BDDMockito.given(this.customerService.create(Mockito.any(Customer.class))).willReturn(customer);
+        BDDMockito.given(this.customerService.save(Mockito.any(Customer.class))).willReturn(customer);
 
         mvc.perform(MockMvcRequestBuilders.post(URL_BASE)
                 .content(gson.toJson(customer))
@@ -114,4 +117,44 @@ public class ApiCustomerControllerTest {
                 .andExpect(jsonPath("$.errors").value("must not be empty"))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
+
+    /***
+     * A PARTIR DAQUI SÃO TESTES DE UPDATE
+     */
+
+    /** TESTE ATUALIZACAO DO CLIENTE DE ID 1L*/
+    @Test
+    public void testUpdateCustomer() throws Exception {
+
+        Customer customer = new Customer();
+        customer.setId(ID_CUSTOMER);
+        customer.setName("Julio");
+        customer.setEmail("julio@email.com");
+
+        Gson gson = new Gson();
+
+        BDDMockito.given(this.customerService.findById(ID_CUSTOMER)).willReturn(Optional.of(new Customer()));
+
+        mvc.perform(MockMvcRequestBuilders.put(URL_BASE+"/{id}", ID_CUSTOMER)
+                .content(gson.toJson(customer))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.name").value("Julio"))
+                .andExpect(jsonPath("$.data.email").value("julio@email.com"))
+                .andExpect(jsonPath("$.errors").isEmpty());
+    }
+
+    /***
+     * A PARTIR DAQUI SÃO TESTES DE DELETE
+     */
+    @Test
+    public void testDeleteCustomer() throws Exception {
+        BDDMockito.given(this.customerService.findById(Mockito.anyLong())).willReturn(Optional.of(new Customer()));
+
+        mvc.perform(MockMvcRequestBuilders.delete(URL_BASE + ID_CUSTOMER)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+
 }

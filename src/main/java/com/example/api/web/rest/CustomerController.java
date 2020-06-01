@@ -18,29 +18,57 @@ import javax.validation.Valid;
 @RequestMapping("/customers")
 public class CustomerController {
 
-	private CustomerService service;
+    private CustomerService service;
 
-	@Autowired
-	public CustomerController(CustomerService service) {
-		this.service = service;
-	}
+    @Autowired
+    public CustomerController(CustomerService service) {
+        this.service = service;
+    }
 
-	@GetMapping
-	public List<Customer> findAll() {
-		return service.findAll();
-	}
+    @GetMapping
+    public List<Customer> findAll() {
+        return service.findAll();
+    }
 
-	@GetMapping("/{id}")
-	public Customer findById(@PathVariable Long id) {
-		return service.findById(id)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
-	}
+    @GetMapping("/{id}")
+    public Customer findById(@PathVariable Long id) {
+        return service.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+    }
 
-	@PostMapping
-	public ResponseEntity<Response<Customer>> create(@RequestBody @Valid Customer customer){
-		Response<Customer> response = new Response<Customer>();
-		Customer customerResult = service.create(customer);
-		response.setData(customerResult);
-		return ResponseEntity.ok(response);
-	}
+    @PostMapping
+    public ResponseEntity<Response<Customer>> create(@RequestBody @Valid Customer customer) {
+        Response<Customer> response = new Response<Customer>();
+        Customer customerResult = service.save(customer);
+        response.setData(customerResult);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<Response<Customer>> update(@PathVariable("id") Long id, @RequestBody @Valid Customer customer) {
+        Response<Customer> response = new Response<Customer>();
+
+        Customer customerResult = service.findById(id).map(
+                customerDb -> {
+                    customerDb.setName(customer.getName());
+                    customerDb.setEmail(customer.getEmail());
+                    service.save(customerDb);
+                    return customerDb;
+                }
+        ).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+
+        response.setData(customerResult);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id){
+        service.findById(id).map(
+                customer -> {
+                    service.delete(customer);
+                    return customer;
+                }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+    }
+
 }
