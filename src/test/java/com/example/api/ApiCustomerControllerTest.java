@@ -12,16 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -58,5 +53,65 @@ public class ApiCustomerControllerTest {
                 .andExpect(jsonPath("$.data.name").value("Alfredo"))
                 .andExpect(jsonPath("$.data.email").value("email@email.com"))
                 .andExpect(jsonPath("$.errors").isEmpty());
+    }
+
+    /** TESTE CADASTRO DE UM NOVO CLIENTE COM NOME INVALIDO*/
+    @Test
+    public void testCreateCustomerInvalidName() throws Exception {
+
+        Customer customer = new Customer();
+        customer.setId(1L);
+        customer.setName("");
+        customer.setEmail("email@email.com");
+
+        Gson gson = new Gson();
+
+        mvc.perform(MockMvcRequestBuilders.post(URL_BASE)
+                .content(gson.toJson(customer))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors").value("must not be empty"))
+                .andExpect(jsonPath("$.data").isEmpty());
+    }
+
+    /** TESTE CADASTRO DE UM NOVO CLIENTE COM FORMATO DO EMAIL INVALIDO*/
+    @Test
+    public void testCreateCustomerInvalidEmailFormat() throws Exception {
+
+        Customer customer = new Customer();
+        customer.setId(1L);
+        customer.setName("Alfredo");
+        customer.setEmail("email#emai");
+
+        Gson gson = new Gson();
+
+        mvc.perform(MockMvcRequestBuilders.post(URL_BASE)
+                .content(gson.toJson(customer))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors").value("must be a well-formed email address"))
+                .andExpect(jsonPath("$.data").isEmpty());
+    }
+
+    /** TESTE CADASTRO DE UM NOVO CLIENTE COM EMAIL VAZIO*/
+    @Test
+    public void testCreateCustomerInvalidEmail() throws Exception {
+
+        Customer customer = new Customer();
+        customer.setId(1L);
+        customer.setName("Alfredo");
+        customer.setEmail("");
+
+        Gson gson = new Gson();
+
+        mvc.perform(MockMvcRequestBuilders.post(URL_BASE)
+                .content(gson.toJson(customer))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors").value("must not be empty"))
+                .andExpect(jsonPath("$.data").isEmpty());
     }
 }
