@@ -145,6 +145,72 @@ public class ApiCustomerControllerTest {
                 .andExpect(jsonPath("$.errors").isEmpty());
     }
 
+    /** TESTE UPDATE DE CLIENTE COM NOME INVALIDO*/
+    @Test
+    public void testUpdateCustomerInvalidName() throws Exception {
+
+        Customer customer = new Customer();
+        customer.setId(ID_CUSTOMER);
+        customer.setName("");
+        customer.setEmail("julio@email.com");
+
+        Gson gson = new Gson();
+
+        BDDMockito.given(this.customerService.findById(ID_CUSTOMER)).willReturn(Optional.of(new Customer()));
+
+        mvc.perform(MockMvcRequestBuilders.put(URL_BASE+"/{id}", ID_CUSTOMER)
+                .content(gson.toJson(customer))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors").value("must not be empty"))
+                .andExpect(jsonPath("$.data").isEmpty());
+    }
+
+    /** TESTE UPDATE DE CLIENTE COM FORMATO DE EMAIL INVALIDO*/
+    @Test
+    public void testUpdateCustomerInvalidEmailFormat() throws Exception {
+
+        Customer customer = new Customer();
+        customer.setId(ID_CUSTOMER);
+        customer.setName("Julio");
+        customer.setEmail("julioemail");
+
+        Gson gson = new Gson();
+
+        BDDMockito.given(this.customerService.findById(ID_CUSTOMER)).willReturn(Optional.of(new Customer()));
+
+        mvc.perform(MockMvcRequestBuilders.put(URL_BASE+"/{id}", ID_CUSTOMER)
+                .content(gson.toJson(customer))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors").value("must be a well-formed email address"))
+                .andExpect(jsonPath("$.data").isEmpty());
+    }
+
+    /** TESTE UPDATE DE CLIENTE COM EMAIL VAZIO*/
+    @Test
+    public void testUpdateCustomerInvalidEmail() throws Exception {
+
+        Customer customer = new Customer();
+        customer.setId(ID_CUSTOMER);
+        customer.setName("Julio");
+        customer.setEmail("");
+
+        Gson gson = new Gson();
+
+        BDDMockito.given(this.customerService.findById(ID_CUSTOMER)).willReturn(Optional.of(new Customer()));
+
+        mvc.perform(MockMvcRequestBuilders.put(URL_BASE+"/{id}", ID_CUSTOMER)
+                .content(gson.toJson(customer))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors").value("must not be empty"))
+                .andExpect(jsonPath("$.data").isEmpty());
+    }
+
     /***
      * A PARTIR DAQUI SÃO TESTES DE DELETE
      */
@@ -155,6 +221,18 @@ public class ApiCustomerControllerTest {
         mvc.perform(MockMvcRequestBuilders.delete(URL_BASE + ID_CUSTOMER)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
+    }
+
+    /** TESTE DELETE DE CLIENTE COM ID QUE NÃO EXISTE*/
+    @Test
+    public void testDeleteCustomerIdInvalid() throws Exception {
+        BDDMockito.doNothing().when(customerService).delete(Mockito.any(Customer.class));
+
+        mvc.perform(MockMvcRequestBuilders.delete(URL_BASE + 123456)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errors").value("404 NOT_FOUND \"Customer not found\""))
+                .andExpect(jsonPath("$.data").isEmpty());
     }
 
 }

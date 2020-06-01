@@ -18,12 +18,8 @@ import javax.validation.Valid;
 @RequestMapping("/customers")
 public class CustomerController {
 
-    private CustomerService service;
-
     @Autowired
-    public CustomerController(CustomerService service) {
-        this.service = service;
-    }
+    private CustomerService service;
 
     @GetMapping
     public List<Customer> findAll() {
@@ -70,5 +66,4 @@ public class CustomerController {
                     return customer;
                 }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
     }
-
 }
