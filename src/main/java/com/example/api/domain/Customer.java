@@ -1,12 +1,9 @@
 package com.example.api.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 @Entity
 public class Customer {
@@ -24,11 +21,14 @@ public class Customer {
 	@Email
 	private String email;
 
+	@OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
+	public List<Address> address;
+
 	public Long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(Long id){
 		this.id = id;
 	}
 
@@ -48,4 +48,11 @@ public class Customer {
 		this.email = email;
 	}
 
+	public List<Address> getAddress() {
+		return address;
+	}
+
+	public void setAddress(List<Address> address) {
+		this.address = address;
+	}
 }
