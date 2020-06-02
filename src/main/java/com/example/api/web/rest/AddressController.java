@@ -13,15 +13,12 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,16 +27,14 @@ import java.util.stream.Collectors;
 @Api("Api Address")
 public class AddressController {
 
-    private static final RestTemplate Endereco = null;
+    @Autowired
+    public AddressService addressService;
 
     @Autowired
-    private AddressService addressService;
+    public AddressApiViaCEPService addressApiViaCEPService;
 
     @Autowired
-    private AddressApiViaCEPService addressApiViaCEPService;
-
-    @Autowired
-    private CustomerService customerService;
+    public CustomerService customerService;
 
     @PostMapping
     @ApiOperation("Permite incluir endereços associando-os ao Cliente informado")

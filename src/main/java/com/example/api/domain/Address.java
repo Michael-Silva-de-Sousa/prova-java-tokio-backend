@@ -15,7 +15,6 @@ public class Address {
 
     @Column(nullable = false)
     @NotEmpty
-    @Size(max = 8, message = "maximum allowed 8 characters")
     private String zipCode;
 
     private String publicPlace;
