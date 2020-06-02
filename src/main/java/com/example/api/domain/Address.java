@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Address {
@@ -14,6 +15,7 @@ public class Address {
 
     @Column(nullable = false)
     @NotEmpty
+    @Size(max = 8, message = "maximum allowed 8 characters")
     private String zipCode;
 
     private String publicPlace;

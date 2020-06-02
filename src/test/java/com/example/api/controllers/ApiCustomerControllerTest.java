@@ -12,12 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,6 +44,7 @@ public class ApiCustomerControllerTest {
 
     /** TESTE CADASTRO DE UM NOVO CLIENTE*/
     @Test
+    @WithMockUser(roles = "ADMIN")
     public void testCreateCustomer() throws Exception {
 
         Customer customer = new Customer();
@@ -65,6 +68,7 @@ public class ApiCustomerControllerTest {
 
     /** TESTE CADASTRO DE UM NOVO CLIENTE COM NOME INVALIDO*/
     @Test
+    @WithMockUser(roles = "ADMIN")
     public void testCreateCustomerInvalidName() throws Exception {
 
         Customer customer = new Customer();
@@ -85,6 +89,7 @@ public class ApiCustomerControllerTest {
 
     /** TESTE CADASTRO DE UM NOVO CLIENTE COM FORMATO DO EMAIL INVALIDO*/
     @Test
+    @WithMockUser(roles = "ADMIN")
     public void testCreateCustomerInvalidEmailFormat() throws Exception {
 
         Customer customer = new Customer();
@@ -105,6 +110,7 @@ public class ApiCustomerControllerTest {
 
     /** TESTE CADASTRO DE UM NOVO CLIENTE COM EMAIL VAZIO*/
     @Test
+    @WithMockUser(roles = "ADMIN")
     public void testCreateCustomerInvalidEmail() throws Exception {
 
         Customer customer = new Customer();
@@ -129,6 +135,7 @@ public class ApiCustomerControllerTest {
 
     /** TESTE ATUALIZACAO DO CLIENTE DE ID 1L*/
     @Test
+    @WithMockUser(roles = "ADMIN")
     public void testUpdateCustomer() throws Exception {
 
         Customer customer = new Customer();
@@ -152,6 +159,7 @@ public class ApiCustomerControllerTest {
 
     /** TESTE UPDATE DE CLIENTE COM NOME INVALIDO*/
     @Test
+    @WithMockUser(roles = "ADMIN")
     public void testUpdateCustomerInvalidName() throws Exception {
 
         Customer customer = new Customer();
@@ -174,6 +182,7 @@ public class ApiCustomerControllerTest {
 
     /** TESTE UPDATE DE CLIENTE COM FORMATO DE EMAIL INVALIDO*/
     @Test
+    @WithMockUser(roles = "ADMIN")
     public void testUpdateCustomerInvalidEmailFormat() throws Exception {
 
         Customer customer = new Customer();
@@ -196,6 +205,7 @@ public class ApiCustomerControllerTest {
 
     /** TESTE UPDATE DE CLIENTE COM EMAIL VAZIO*/
     @Test
+    @WithMockUser(roles = "ADMIN")
     public void testUpdateCustomerInvalidEmail() throws Exception {
 
         Customer customer = new Customer();
@@ -220,6 +230,7 @@ public class ApiCustomerControllerTest {
      * A PARTIR DAQUI SÃO TESTES DE DELETE
      */
     @Test
+    @WithMockUser(roles = "ADMIN")
     public void testDeleteCustomer() throws Exception {
         BDDMockito.given(this.customerService.findById(Mockito.anyLong())).willReturn(Optional.of(new Customer()));
 
@@ -230,6 +241,7 @@ public class ApiCustomerControllerTest {
 
     /** TESTE DELETE DE CLIENTE COM ID QUE NÃO EXISTE*/
     @Test
+    @WithMockUser(roles = "ADMIN")
     public void testDeleteCustomerIdInvalid() throws Exception {
         BDDMockito.doNothing().when(customerService).delete(Mockito.any(Customer.class));
 
@@ -242,8 +254,9 @@ public class ApiCustomerControllerTest {
 
     /***
      * A PARTIR DAQUI SÃO TESTES DE GET
-
+    */
     @Test
+    @WithMockUser(roles = "ADMIN")
     public void testCustomerFindAll() throws Exception {
         List all = new ArrayList<>();
 
@@ -259,15 +272,16 @@ public class ApiCustomerControllerTest {
 
         all.addAll(Arrays.asList(customer1, customer2));
 
-        BDDMockito.when(this.customerService.findAll()).thenReturn(all);
+        BDDMockito.when(this.customerService.findAll(Pageable.unpaged())).thenReturn((Page<Customer>) all);
 
-        List result = this.customerService.findAll();
+        List result = (List) this.customerService.findAll(Pageable.unpaged());
 
-        BDDMockito.verify(customerService).findAll();
+        BDDMockito.verify(customerService).findAll(Pageable.unpaged());
         assertEquals(2, result.size());
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     public void testCustomerFindById() throws Exception {
 
         Customer customer = new Customer();
@@ -284,5 +298,5 @@ public class ApiCustomerControllerTest {
                 .andExpect(jsonPath("$.data.name").value("Alfredo"))
                 .andExpect(jsonPath("$.data.email").value("alfredo@email.com"))
                 .andExpect(jsonPath("$.errors").isEmpty());
-    }*/
+    }
 }
