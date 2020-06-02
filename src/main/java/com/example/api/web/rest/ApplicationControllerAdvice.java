@@ -1,5 +1,6 @@
 package com.example.api.web.rest;
 
+import com.example.api.exceptions.PasswordInvalidException;
 import com.example.api.resonse.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,5 +32,13 @@ public class ApplicationControllerAdvice {
         String message = ex.getMessage();
         response.getErrors().add(message);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(PasswordInvalidException.class)
+    public ResponseEntity<Response<String>> handlePasswordInvalidException(PasswordInvalidException ex) {
+        Response<String> response = new Response<>();
+        String message = ex.getMessage();
+        response.getErrors().add(message);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 }

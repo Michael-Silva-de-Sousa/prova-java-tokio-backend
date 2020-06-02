@@ -1,5 +1,6 @@
 package com.example.api.service;
 
+import com.example.api.exceptions.PasswordInvalidException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +14,16 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private PasswordEncoder encoder;
+
+    public UserDetails authenticate(String userName, String password) {
+        UserDetails userDetails = loadUserByUsername(userName);
+        boolean passwordOk = encoder.matches(password, userDetails.getPassword());
+
+        if(passwordOk){
+            return  userDetails;
+        }
+        throw new PasswordInvalidException();
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
