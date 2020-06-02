@@ -21,7 +21,7 @@
 - [x] Validações.
 - [x] Autenticação.
 - [x] Documentação. http://localhost:8080/swagger-ui.html
-- [x] Frontend.
+- [ ] Frontend. (Em desenvolvimento, será em Angular2)
 
 ### Tecnologias utilizadas
 - Java8
@@ -38,4 +38,29 @@
 - DTO
 - MVC
 
+
+### Obtendo o Token
+> Para usar os recursos do backend é necessário estar autenticado e pedir o token para o backend.
+> Segue uma maneira de obter um token via PostMan. Pelo Swagger também é possível.
+
+##### POST http://localhost:8080/users/auth
+request
+```
+{
+	"login":"admin",
+	"password":"1234"
+}
+```
+response
+```
+{
+    "login": "admin",
+    "token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTU5MTExMzkwMn0.g_hnYMhR6n2pAE9oO2dEr9aTDI2ZjhQBzH4L-6GYC3Tr5n6aIFqMZYbW6fqwIUwoZumflNUbHjFsJZHsRZ8VQg"
+}
+```
+
+**Obs ao configurar o Authorization no PostMan não esquecer de colocar o value dessa forma**
+```
+Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTU5MTExMzkwMn0.g_hnYMhR6n2pAE9oO2dEr9aTDI2ZjhQBzH4L-6GYC3Tr5n6aIFqMZYbW6fqwIUwoZumflNUbHjFsJZHsRZ8VQg
+```
 
