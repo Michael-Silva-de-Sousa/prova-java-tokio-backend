@@ -64,3 +64,69 @@ response
 Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTU5MTExMzkwMn0.g_hnYMhR6n2pAE9oO2dEr9aTDI2ZjhQBzH4L-6GYC3Tr5n6aIFqMZYbW6fqwIUwoZumflNUbHjFsJZHsRZ8VQg
 ```
 
+### Cadastrando vários endereços para o Cliente
+> Exemplo do cadastro de vários endereços mediante envio de uma lista de ceps.
+> Os ceps são consultados via serviço: https://viacep.com.br/.
+
+##### POST http://localhost:8080/address/zipcode
+request
+```
+{
+	"idCustomer": 1,
+	"zipCodes": [
+		"76875845",
+		"25267142",
+		"44052054",
+		"69312528"
+		]
+}
+```
+response
+```
+{
+    "data": {
+        "id": 1,
+        "name": "Mariazinha",
+        "email": "mariazinha@email.com",
+        "address": [
+            {
+                "id": 1,
+                "zipCode": "76875-845",
+                "publicPlace": "Avenida das Esmeraldas",
+                "complement": "até 5300/5301",
+                "neighborhood": "Parque das Gemas",
+                "locality": "Ariquemes",
+                "uf": "RO"
+            },
+            {
+                "id": 2,
+                "zipCode": "25267-142",
+                "publicPlace": "Rua Echeverria",
+                "complement": "(Lot Jd Rotsen l)",
+                "neighborhood": "Barro Branco",
+                "locality": "Duque de Caxias",
+                "uf": "RJ"
+            },
+            {
+                "id": 3,
+                "zipCode": "44052-054",
+                "publicPlace": "1ª Travessa Juiz de Fora",
+                "complement": "",
+                "neighborhood": "CASEB",
+                "locality": "Feira de Santana",
+                "uf": "BA"
+            },
+            {
+                "id": 4,
+                "zipCode": "69312-528",
+                "publicPlace": "Rua Valmir Sabino de Oliveira",
+                "complement": "",
+                "neighborhood": "Centenário",
+                "locality": "Boa Vista",
+                "uf": "RR"
+            }
+        ]
+    },
+    "errors": []
+}
+```
