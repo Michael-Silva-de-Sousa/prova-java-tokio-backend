@@ -2,8 +2,10 @@ package com.example.api.controllers;
 
 
 import com.example.api.domain.Customer;
+import com.example.api.repository.CustomerRepository;
 import com.example.api.service.CustomerService;
 import com.google.gson.Gson;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
@@ -11,10 +13,13 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,13 +30,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-public class ApiCustomerControllerTest {
+public class CustomerControllerTest {
+
+    @Autowired
+    private TestRestTemplate testRestTemplate;
 
     @Autowired
     private MockMvc mvc;
@@ -39,8 +46,19 @@ public class ApiCustomerControllerTest {
     @MockBean
     private CustomerService customerService;
 
+    @MockBean
+    private CustomerRepository customerRepository;
+
     private static final String URL_BASE = "/customers/";
     private static final Long ID_CUSTOMER = 1L;
+
+    @TestConfiguration
+    static class Config {
+        @Bean
+        public RestTemplateBuilder restTemplateBuilder(){
+            return new RestTemplateBuilder().basicAuthentication("admin", "1234");
+        }
+    }
 
     /** TESTE CADASTRO DE UM NOVO CLIENTE*/
     @Test
@@ -258,7 +276,7 @@ public class ApiCustomerControllerTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     public void testCustomerFindAll() throws Exception {
-        List all = new ArrayList<>();
+        List<Customer> customers = new ArrayList<>();
 
         Customer customer1 = new Customer();
         customer1.setId(1L);
@@ -270,14 +288,14 @@ public class ApiCustomerControllerTest {
         customer2.setName("Julio");
         customer2.setEmail("julio@email.com");
 
-        all.addAll(Arrays.asList(customer1, customer2));
+        customers.addAll(Arrays.asList(customer1, customer2));
 
-        BDDMockito.when(this.customerService.findAll(Pageable.unpaged())).thenReturn((Page<Customer>) all);
+        BDDMockito.when(customerRepository.findAll()).thenReturn(customers);
 
-        List result = (List) this.customerService.findAll(Pageable.unpaged());
-
-        BDDMockito.verify(customerService).findAll(Pageable.unpaged());
-        assertEquals(2, result.size());
+        mvc.perform(MockMvcRequestBuilders.get(URL_BASE)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.errors").isEmpty());
     }
 
     @Test
