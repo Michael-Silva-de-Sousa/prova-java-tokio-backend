@@ -31,7 +31,7 @@ public class ApplicationControllerAdvice {
         Response<String> response = new Response<>();
         String message = ex.getMessage();
         response.getErrors().add(message);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        return ResponseEntity.status(ex.getStatus()).body(response);
     }
 
     @ExceptionHandler(PasswordInvalidException.class)

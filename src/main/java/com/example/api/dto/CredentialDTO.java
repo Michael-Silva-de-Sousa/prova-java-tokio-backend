@@ -5,6 +5,11 @@ public class CredentialDTO {
     private String login;
     private String password;
 
+    public CredentialDTO(String username, String password) {
+        this.login = username;
+        this.password = password;
+    }
+
     public String getLogin() {
         return login;
     }

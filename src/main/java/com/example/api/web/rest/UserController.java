@@ -29,10 +29,10 @@ public class UserController {
     public JwtService jwtService;
 
     @PostMapping("/auth")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @ApiOperation("Permite autenticar o usuário na aplicação")
     @ApiResponses({
-            @ApiResponse(code = 201, message = "Token válido. Usuario autenticado com sucesso"),
+            @ApiResponse(code = 200, message = "Token válido. Usuario autenticado com sucesso"),
             @ApiResponse(code = 401, message = "Token inválido. Credenciais inválidas")
     })
     public TokenDTO authenticate(@RequestBody CredentialDTO credentialDTO){
@@ -48,7 +48,7 @@ public class UserController {
                     .build());
 
             return new TokenDTO(userAuth.getUsername(), token);
-        } catch (UsernameNotFoundException | PasswordInvalidException e) {
+        } catch (PasswordInvalidException e) {
             throw  new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
