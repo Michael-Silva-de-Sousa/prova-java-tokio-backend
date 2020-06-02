@@ -20,7 +20,7 @@
 - [x] Testes.
 - [x] Validações.
 - [x] Autenticação.
-- [x] Documentação.
+- [x] Documentação. http://localhost:8080/swagger-ui.html
 - [x] Frontend.
 
 ### Tecnologias utilizadas
