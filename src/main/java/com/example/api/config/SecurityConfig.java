@@ -1,5 +1,7 @@
 package com.example.api.config;
 
+import com.example.api.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -10,6 +12,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private UserService userService;
 
     /**
      * Criptografia da senha do usuario.
@@ -27,11 +32,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .passwordEncoder(passwordEncoder())
-                .withUser("admin")
-                .password(passwordEncoder().encode("123"))
-                .roles("USER");
+        auth.userDetailsService(userService)
+                .passwordEncoder(passwordEncoder());
     }
 
     /**
@@ -45,7 +47,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                     .antMatchers("/customers/**")
                     .authenticated()
+                    .antMatchers("/address/**")
+                    .authenticated()
                 .and()
-                    .formLogin();//Formulario nativo do Spring Security.
+                    .httpBasic();
     }
 }
