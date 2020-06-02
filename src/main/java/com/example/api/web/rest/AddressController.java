@@ -8,6 +8,10 @@ import com.example.api.resonse.Response;
 import com.example.api.service.AddressApiViaCEPService;
 import com.example.api.service.AddressService;
 import com.example.api.service.CustomerService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +27,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/address")
+@Api("Api Address")
 public class AddressController {
 
     private static final RestTemplate Endereco = null;
@@ -37,6 +42,11 @@ public class AddressController {
     private CustomerService customerService;
 
     @PostMapping
+    @ApiOperation("Permite incluir endereços associando-os ao Cliente informado")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Endereço salvo com sucesso"),
+            @ApiResponse(code = 404, message = "Cliente não encontrado para o ID informado.")
+    })
     public ResponseEntity<Response<Customer>> save(@RequestBody CustomerAddressDTO addressDTO) {
         Response<Customer> response = new Response<Customer>();
 
@@ -51,7 +61,13 @@ public class AddressController {
     }
 
     @PostMapping("/zipcode")
-    public ResponseEntity<Response<Customer>> savePerZipCode(@RequestBody @Valid CustomerAddressPerZipCodeDTO customerAddressPerZipCodeDTO) {
+    @ApiOperation("Permite incluir endereços ao Cliente informado apenas ao informar o CEP.\n" +
+                    "O CEP informado é consultado via consumo do serviço: https://viacep.com.br/")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Endereços salvos com sucesso"),
+            @ApiResponse(code = 404, message = "Cliente não encontrado para o ID informado.")
+    })
+    public ResponseEntity<Response<Customer>> savePerZipCode(@RequestBody CustomerAddressPerZipCodeDTO customerAddressPerZipCodeDTO) {
         Response<Customer> response = new Response<Customer>();
 
         Customer customer = customerService.findById(customerAddressPerZipCodeDTO.getIdCustomer())
