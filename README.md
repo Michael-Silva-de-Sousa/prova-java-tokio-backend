@@ -15,6 +15,7 @@
 - [x] Valide os dados antes de cadastrar ou editar.
 - [x] Pagine a listagem de clientes.
 - [x] Possibilite o cadastro de múltiplos endereços para um cliente.
+- [x] No cadastro de endereço permita inserir apenas o CEP carregando os dados via consumo do serviço: https://viacep.com.br/
 - [x] Tratamento de exceções (RestControllerAdvice).
 - [x] Testes.
 - [x] Validações.
