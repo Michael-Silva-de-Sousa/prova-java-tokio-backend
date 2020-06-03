@@ -20,7 +20,7 @@
 - [x] Testes.
 - [x] Validações.
 - [x] Autenticação.
-- [x] Documentação. http://localhost:8080/swagger-ui.html
+- [x] Documentação. http://localhost:8080/swagger-ui.html  [Documento com as chamadas Json para Importar para o Postman](https://drive.google.com/drive/folders/1AR6XlvIWR5b7H7ac7wCkaMGSyHGxglAd?usp=sharing)
 - [ ] Frontend. (Em desenvolvimento, será em Angular2)
 
 ### Tecnologias utilizadas
