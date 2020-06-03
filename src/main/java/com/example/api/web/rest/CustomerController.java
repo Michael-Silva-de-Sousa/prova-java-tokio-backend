@@ -23,7 +23,7 @@ import javax.validation.Valid;
 public class CustomerController {
 
     @Autowired
-    private CustomerService service;
+    public CustomerService service;
 
     @GetMapping
     @ApiOperation("Permite buscar todos os Clientes cadastrados na base.")
