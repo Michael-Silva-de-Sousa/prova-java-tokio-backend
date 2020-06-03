@@ -21,7 +21,7 @@ public class Customer {
 	@Email
 	private String email;
 
-	@OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	public List<Address> address;
 
 	public Long getId() {
