@@ -23,7 +23,10 @@ public class Address {
     private String locality;
     private String uf;
 
-    public Address(@NotEmpty String zipCode, String publicPlace, String complement, String neighborhood, String locality, String uf) {
+    public Address(){
+    }
+
+    public Address(String zipCode, String publicPlace, String complement, String neighborhood, String locality, String uf) {
         this.zipCode = zipCode;
         this.publicPlace = publicPlace;
         this.complement = complement;
